@@ -1,9 +1,13 @@
 from enum import Enum, auto
 
 class PageId(Enum):
-    PAGE_ID = auto()
+    PUBLIC_LOGIN = auto() 
 
 class SessionKey(Enum):
+    AUTH_API_CLIENT = auto() 
+    USER_API_CLIENT = auto() 
+    SESSION_ID = auto() 
+    USERBOX = auto() 
     USER = auto()
     PAGE_ID = auto()
 

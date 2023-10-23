@@ -1,4 +1,3 @@
-from __future__ import annotations
 from yaoya.session import StreamlitSessionManager
 from yaoya.const import PageId
 

@@ -1,34 +1,30 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from yaoya.app import MultiPageApp
+from yaoya.const import PageId
 from yaoya.pages.base import BasePage
+from yaoya.pages.public.login import LoginPage
+from yaoya.services.auth import MockAuthAPIClientService, MockUserAPIClientService
 from yaoya.services.mock import MockDB, MockSessionDB
-#from yaoya.session import StreamlitSessionManager
-import streamlit as st
-from yaoya.models.user import User
+from yaoya.session import StreamlitSessionManager
 
-class StreamlitSessionManager:
-    def __init__(self) -> None:
-        self._session_state = st.session_state
 
-    def get_user(self) -> User:
-        return self._session_state["user"]
-
-    def set_user(self, user: User) -> None:
-        self._session_state["user"] = user
     
 def init_session() -> StreamlitSessionManager:
     mockdir = Path(TemporaryDirectory().name) # (A)
     mockdir.mkdir(exist_ok=True)
     mockdb = MockDB(mockdir.joinpath("mock.db"))
     session_db = MockSessionDB(mockdir.joinpath("session.json"))
-    ssm = StreamlitSessionManager()
+    ssm = StreamlitSessionManager(
+        auth_api_client=MockAuthAPIClientService(mockdb, session_db), 
+        user_api_client=MockUserAPIClientService(mockdb, session_db)
+    )
     return ssm
 
 # ページの初期化
 def init_pages(ssm: StreamlitSessionManager) -> list[BasePage]:
     pages = [
-        # ページクラスを追加
+        LoginPage(page_id=PageId.PUBLIC_LOGIN.name, title="ログイン", ssm=ssm)
     ]
     return pages
 
